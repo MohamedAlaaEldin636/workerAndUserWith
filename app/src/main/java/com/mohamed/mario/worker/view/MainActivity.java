@@ -1,9 +1,11 @@
 package com.mohamed.mario.worker.view;
 
 import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,6 +44,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mohamed.mario.worker.R;
+import com.mohamed.mario.worker.databinding.ActivityMainBinding;
 import com.mohamed.mario.worker.model.User;
 import com.mohamed.mario.worker.model.Worker;
 import com.mohamed.mario.worker.utils.CommonIntentsUtils;
@@ -57,28 +60,31 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements MainActivityViewModel.Listener {
     private static final int LOCATION_PERMISSON_INT = 100;
     //For Photo From Camera and Gallery
-    Uri fullPhotoUri = null;
+    //Uri viewModel.fullPhotoUri = null;
     //Toast
     Toast msToast;
     //Firebase
-    private DatabaseReference mDatabase;
+    //private DatabaseReference mDatabase;
     //Loaction
-    private FusedLocationProviderClient mFusedLocationClient;
+    //private FusedLocationProviderClient mFusedLocationClient;
     //Firebase Storage
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference userImageRef;
+    //private FirebaseStorage storage = FirebaseStorage.getInstance();
+    //private StorageReference userImageRef;
 
+    //private Binding
+    private ActivityMainBinding binding;
+
+    private MainActivityViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         // initialize view model
-        MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         viewModel.initSetup(this);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        binding.setViewModel(viewModel);
 
         StartLoactionGetting();
 
@@ -93,6 +99,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
 
         }
     }
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+/*
 
     public void userClick(View view) {
         final CustomDialog customDialog = new CustomDialog(this, R.layout.user_register,
@@ -127,13 +139,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.action_gallery) {
-                            fullPhotoUri = null;
+                            viewModel.fullPhotoUri = null;
                             CommonIntentsUtils.getImageFromGallery(MainActivity.this,
                                     MainActivity.this.getResources().getString(R.string.Get_From_phone)
                                     , CommonIntentsUtils.REQUSER_CODE_Gallery);
 
                         } else if (item.getItemId() == R.id.action_camera) {
-                            fullPhotoUri = null;
+                            viewModel.fullPhotoUri = null;
                             File imageFile = null;
                             try {
                                 imageFile = CommonIntentsUtils.createImageFile(MainActivity.this);
@@ -141,13 +153,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
                                 e.printStackTrace();
                             }
                             // to get file path isa. -> imageFile.getAbsolutePath();
-                            fullPhotoUri = FileProvider.getUriForFile(
+                            viewModel.fullPhotoUri = FileProvider.getUriForFile(
                                     MainActivity.this,
                                     "com.mohamed.mario.worker.fileprovider",
                                     imageFile);
-                            Log.d("MARIO", fullPhotoUri.toString());
+                            Log.d("MARIO", viewModel.fullPhotoUri.toString());
                             CommonIntentsUtils.getImageFromCamera(MainActivity.this, MainActivity.this.getResources().getString(R.string.Get_From_Camera)
-                                    , fullPhotoUri, CommonIntentsUtils.REQUSER_CODE_CAMERA);
+                                    , viewModel.fullPhotoUri, CommonIntentsUtils.REQUSER_CODE_CAMERA);
                         }
 
                         return true;
@@ -165,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
                 //////////////////////////
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
                 //////////////////
-                if (fullPhotoUri == null) {
+                if (viewModel.fullPhotoUri == null) {
                     //We Will Put Default Photo TODO
                 }
                 if (TextUtils.isEmpty(ebt_username.getText().toString()) || ebt_username.getText().length() < 5) {
@@ -187,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
                             if (users_list.size() == 0) {
                                 writeNewUser(ebt_username.getText().toString(),
                                         ebt_phone.getText().toString(), ebt_password.getText().toString()
-                                        , fullPhotoUri.toString(), null, null, null, "");
+                                        , viewModel.fullPhotoUri.toString(), null, null, null, "");
                                 showToast(MainActivity.this.getResources().getString(R.string.successMessage));
                                 customDialog.dismiss();
                             } else {
@@ -217,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
 //endregion
 
     }
+*/
 
 
     public void workerClick(View view) {
@@ -229,9 +242,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
         if (requestCode == CommonIntentsUtils.REQUSER_CODE_Gallery) {
             if (resultCode == RESULT_OK) {
                 //Remove label from layout
-                fullPhotoUri = data.getData();
+                viewModel.fullPhotoUri = data.getData();
                 CommonIntentsUtils.layout.findViewById(CommonIntentsUtils.Txt_ID).setVisibility(View.GONE);
-                Picasso.get().load(fullPhotoUri).into((ImageView)
+                Picasso.get().load(viewModel.fullPhotoUri).into((ImageView)
                         CommonIntentsUtils.layout.findViewById(CommonIntentsUtils.IMAGE_ID));
             }
         }
@@ -239,14 +252,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
                 resultCode == RESULT_OK) {
             //Remove label from layout
             CommonIntentsUtils.layout.findViewById(CommonIntentsUtils.Txt_ID).setVisibility(View.GONE);
-            Picasso.get().load(fullPhotoUri).into((ImageView)
+            Picasso.get().load(viewModel.fullPhotoUri).into((ImageView)
                     CommonIntentsUtils.layout.findViewById(CommonIntentsUtils.IMAGE_ID));
 
         }
     }
 
     ///For Preparing Toast
-    void showToast(String text) {
+    @Override
+    public void showToast(String text) {
         if (msToast != null) {
             msToast.cancel();
         }
@@ -255,93 +269,94 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
 
     }
 
+//
+//    //For FirebaseAddUseres
+//    private void writeNewUser(String name, final String phone, String password, String personalImage, ArrayList<Worker> workersRated,
+//                              ArrayList<Worker> workersReviewed, ArrayList<Worker> lastFiveWorkersVisitedByThisUser, String location) {
+//        final User user = new User(name, phone, password, personalImage, workersRated, workersReviewed
+//                , lastFiveWorkersVisitedByThisUser, location);
+//
+//        final String[] ImageUrl = new String[1];
+//
+//        //region Save Image
+//        userImageRef = storage.getReference().child("users/Images/" + phone + "/image");
+//        Uri file = Uri.parse(personalImage);
+//        UploadTask uploadTask = userImageRef.putFile(file);
+//        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//            @Override
+//            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                if (!task.isSuccessful()) {
+//                    throw task.getException();
+//                }
+//                return userImageRef.getDownloadUrl();
+//            }
+//        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Uri> task) {
+//                if (task.isSuccessful()) {
+//                    Log.e("Imageurl", task.getResult().toString());
+//                    ImageUrl[0] = task.getResult().toString();
+//                    user.setPersonalImage(ImageUrl[0]);
+//                    //UPload USer
+//                    mDatabase.child("users").child(phone).setValue(user);
+//                } else {
+//                    // Handle failures
+//                    // ...
+//                }
+//            }
+//        });
+//
+//
+//        //endregion
+//
+//
+//        //Getting the loaction and save it we will save loaction in Path  path/to/geofire so that we
+//        //Query it we will use the Path
+//
+//        //region Save Location
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Location/User/geofire");
+//        final GeoFire geoFire = new GeoFire(ref);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        mFusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        // Got last known location. In some rare situations this can be null.
+//                        if (location != null) {
+//
+//                            geoFire.setLocation(phone, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
+//                                @Override
+//                                public void onComplete(String key, DatabaseError error) {
+//                                    if (error != null) {
+//                                    } else {
+//                                    }
+//                                }
+//                            });
+//                        } else {
+//
+//                        }
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+//
+//        //endregion
+//
+//
+//    }
 
-    //For FirebaseAddUseres
-    private void writeNewUser(String name, final String phone, String password, String personalImage, ArrayList<Worker> workersRated,
-                              ArrayList<Worker> workersReviewed, ArrayList<Worker> lastFiveWorkersVisitedByThisUser, String location) {
-        final User user = new User(name, phone, password, personalImage, workersRated, workersReviewed
-                , lastFiveWorkersVisitedByThisUser, location);
-
-        final String[] ImageUrl = new String[1];
-
-        //region Save Image
-        userImageRef = storage.getReference().child("users/Images/" + phone + "/image");
-        Uri file = Uri.parse(personalImage);
-        UploadTask uploadTask = userImageRef.putFile(file);
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                return userImageRef.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Log.e("Imageurl", task.getResult().toString());
-                    ImageUrl[0] = task.getResult().toString();
-                    user.setPersonalImage(ImageUrl[0]);
-                    //UPload USer
-                    mDatabase.child("users").child(phone).setValue(user);
-                } else {
-                    // Handle failures
-                    // ...
-                }
-            }
-        });
-
-
-        //endregion
-
-
-        //Getting the loaction and save it we will save loaction in Path  path/to/geofire so that we
-        //Query it we will use the Path
-
-        //region Save Location
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Location/User/geofire");
-        final GeoFire geoFire = new GeoFire(ref);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-
-                            geoFire.setLocation(phone, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
-                                @Override
-                                public void onComplete(String key, DatabaseError error) {
-                                    if (error != null) {
-                                    } else {
-                                    }
-                                }
-                            });
-                        } else {
-
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-
-        //endregion
-
-
-    }
 
     //region Permssion Area
     //For Loaction Permissions
