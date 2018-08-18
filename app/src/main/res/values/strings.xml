@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">شغل جارك</string>
+    <!--Mainactvity-->
+    <string name="worker">اريد ان اعمل</string>
+    <string name="user">اريد ان ابحث</string>
+    <!--User-->
+    <string name="name_user">اسم العميل</string>
+    <string name="phone_user">رقم الهاتف</string>
+    <string name="password_user">الرقم السري</string>
+    <!--meun-->
+    <string name="put_your_image">ضع صورتك</string>
+    <string name="from_camera">من الكاميرا</string>
+    <string name="from_gallery">من الهاتف</string>
+    <!--Worker-->
+    <string name="name_worker">اسم العامل</string>
+    <string name="profession">المهنة</string>
+    <string name="description_label">نبذة مختصرة</string>
+    <string name="previos_work">الاعمال السابقة</string>
+    <string name="similar_worker">عمال اخرين</string>
+    <string name="reviews">تعليقات المستخدمين</string>
+    <string name="put_your_comment_here">ضع تعليق</string>
+    <string name="registeruser">تسجيل العميل</string>
+    <string name="data_enter">ادخل بياناتك كاملة</string>
+    <string name="Get_From_phone">يرجى اختيار صورة من الهاتف</string>
+    <string name="submit">تسجيل</string>
+    <string name="cancel">الغاء</string>
+    <string name="Get_From_Camera">يرجى التقاط صورة للك</string>
+    <string name="You_Must_youname">يجب وضع اسم لك و لا يقل طولة عن 5 احرف</string>
+    <string name="You_Must_yourphone">يجب وضع رقم الهاتف و طولة يساوى 11 رقم</string>
+    <string name="You_Must_yourpassword">يجب وضع رقم سري ولا يقل طولة عن 8 ارقام وحروف</string>
+    <string name="successMessage">تم عمل حساب بنجاح</string>
+    <string name="this_phone_has_registerd">عفوا هذا الهاتف مسجل سابقا</string>
+    <string name="location_access">تصريح الوصول للموقع</string>
+    <string name="location_access_message">يرجى السماح باستخدام الموقع لكى تتمكن من استخدام جميع مميزات التطبيق للوصول الي اقرب العاملين بجانبك</string>
+    <string name="ok">اسمح</string>
+    <string name="no_loaction_user">عذرا لن تستفيد من نظام جلب اقرب العاملين بجانبك</string>
+    <string name="succesful_loaction">تم السماح بنجاح</string>
+    <string-array name="professions_list">
+        <item>سباك</item>
+        <item>نجار</item>
+        <item>حداد</item>
+    </string-array>
+</resources>

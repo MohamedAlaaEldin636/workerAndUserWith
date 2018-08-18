@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#100000</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#a00</color>
+    <color name="movieTitle">#02747d</color>
+    <color name="favoriteColor">#03bcc9</color>
+    <color name="textColors">#666666</color>
+    <color name="actionBar"> #cccccc</color>
+</resources>
