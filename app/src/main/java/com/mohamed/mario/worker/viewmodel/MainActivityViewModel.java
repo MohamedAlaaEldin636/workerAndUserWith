@@ -110,7 +110,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     public void userClick(View view) {
         Context context = getApplication().getApplicationContext();
 
-        final CustomDialog customDialog = new CustomDialog(context, R.layout.user_register,
+        final CustomDialog customDialog = new CustomDialog(listener.getActivity(), R.layout.user_register,
                 context.getResources().getString(R.string.registeruser), context.getResources().getString(R.string.data_enter)
                 , context.getResources().getString(R.string.submit), context.getResources().getString(R.string.cancel));
 
@@ -207,6 +207,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                                         , fullPhotoUri.toString(), null, null, null, "");
                                 listener.showToast(context.getResources().getString(R.string.successMessage));
                                 customDialog.dismiss();
+                                frame_loading.setVisibility(View.GONE);
                             } else {
                                 listener.showToast(context.getResources().getString(R.string.this_phone_has_registerd));
 
@@ -279,7 +280,8 @@ public class MainActivityViewModel extends AndroidViewModel {
         //region Save Location
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(USERES_DATABASE_LOCATION_USER_PATH);
         final GeoFire geoFire = new GeoFire(ref);
-        if (ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -315,7 +317,10 @@ public class MainActivityViewModel extends AndroidViewModel {
             }
         });
 
+
+
         //endregion
+
 
 
     }
