@@ -44,6 +44,7 @@ import com.mohamed.mario.worker.R;
 import com.mohamed.mario.worker.model.User;
 import com.mohamed.mario.worker.model.Worker;
 import com.mohamed.mario.worker.utils.CommonIntentsUtils;
+import com.mohamed.mario.worker.utils.NetworkUtils;
 import com.mohamed.mario.worker.utils.SharedPrefUtils;
 import com.mohamed.mario.worker.view.dialogs.CustomDialog;
 
@@ -57,6 +58,7 @@ import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_NAME;
 import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_PHOTO_LOCATION;
 import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_PHOTO_NAME;
 import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_QUERY_PHONE;
+import static com.mohamed.mario.worker.utils.SharedPrefUtils.VALUE_KEY_USER;
 
 public class MainActivityViewModel extends AndroidViewModel {
     //Firebase
@@ -89,7 +91,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     private void checkIfPreviouslyRegistered() {
         String loginInfo = SharedPrefUtils.getLoginData(getApplication().getApplicationContext());
 
-        if (loginInfo.equals(SharedPrefUtils.VALUE_KEY_USER)) {
+        if (loginInfo.equals(VALUE_KEY_USER)) {
             listener.launchActivity(true);
         } else if (loginInfo.equals(SharedPrefUtils.VALUE_KEY_WORKER)) {
             listener.launchActivity(false);
@@ -189,6 +191,9 @@ public class MainActivityViewModel extends AndroidViewModel {
                     listener.showToast(context.getResources().getString(R.string.You_Must_yourphone));
                 } else if (TextUtils.isEmpty(ebt_password.getText().toString()) || ebt_password.getText().length() < 8) {
                     listener.showToast(context.getResources().getString(R.string.You_Must_yourpassword));
+                } else if (!NetworkUtils.isCurrentlyOnline(getApplication().getApplicationContext())) {
+                    listener.showToast(context.getResources().getString(R.string.No_Internet_connection));
+
                 } else {
                     ////////////////////////////Check If Same user in database
                     Query phoneQuery = ref.orderByChild(USERES_DATABASE_QUERY_PHONE).equalTo(ebt_phone.getText().toString());
@@ -201,13 +206,13 @@ public class MainActivityViewModel extends AndroidViewModel {
                                 users_list.add(singleSnapshot.getValue(User.class));
                             }
                             if (users_list.size() == 0) {
-                                frame_loading.setVisibility(View.VISIBLE);
                                 writeNewUser(ebt_username.getText().toString(),
                                         ebt_phone.getText().toString(), ebt_password.getText().toString()
-                                        , fullPhotoUri.toString(), null, null, null, "");
+                                        , fullPhotoUri.toString(), null, null, null, ""
+                                        , frame_loading, customDialog);
                                 listener.showToast(context.getResources().getString(R.string.successMessage));
-                                customDialog.dismiss();
-                                frame_loading.setVisibility(View.GONE);
+                             /*  customDialog.dismiss();
+                                frame_loading.setVisibility(View.GONE);*/
                             } else {
                                 listener.showToast(context.getResources().getString(R.string.this_phone_has_registerd));
 
@@ -240,13 +245,20 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     //For FirebaseAddUseres
     private void writeNewUser(String name, final String phone, String password, String personalImage, ArrayList<Worker> workersRated,
-                              ArrayList<Worker> workersReviewed, ArrayList<Worker> lastFiveWorkersVisitedByThisUser, String location) {
+                              ArrayList<Worker> workersReviewed, ArrayList<Worker>
+                                      lastFiveWorkersVisitedByThisUser, String location,
+                              FrameLayout frame_loading, CustomDialog customDialog) {
+
+
         final User user = new User(name, phone, password, personalImage, workersRated, workersReviewed
                 , lastFiveWorkersVisitedByThisUser, location);
 
+
+        frame_loading.setVisibility(View.VISIBLE);
         //region Save Image
         userImageRef = storage.getReference().child(USERES_DATABASE_PHOTO_LOCATION + phone + USERES_DATABASE_PHOTO_NAME);
         Uri file = Uri.parse(personalImage);
+        //    Uri file = Uri.parse(personalImage);
         //here the image will uploaded
         UploadTask uploadTask = userImageRef.putFile(file);
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -264,8 +276,13 @@ public class MainActivityViewModel extends AndroidViewModel {
                     user.setPersonalImage(task.getResult().toString());
                     //UPload USer
                     mDatabase.child(USERES_DATABASE_NAME).child(phone).setValue(user);
+                    SharedPrefUtils.setLoginData(getApplication().getApplicationContext(), VALUE_KEY_USER, phone);
+
+                    customDialog.dismiss();
                 } else {
                     mDatabase.child(USERES_DATABASE_NAME).child(phone).setValue(user);
+
+                    customDialog.dismiss();
 
                 }
             }
@@ -277,50 +294,10 @@ public class MainActivityViewModel extends AndroidViewModel {
         //Getting the loaction and save it we will save loaction in Path  path/to/geofire so that we
         //Query it we will use the Path
 
-        //region Save Location
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(USERES_DATABASE_LOCATION_USER_PATH);
-        final GeoFire geoFire = new GeoFire(ref);
-        if (ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(listener.getActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
 
-                            geoFire.setLocation(phone, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
-                                @Override
-                                public void onComplete(String key, DatabaseError error) {
-                                    if (error != null) {
-                                    } else {
-                                    }
-                                }
-                            });
-                        } else {
-
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-
-
+        //region Save To Pre
 
         //endregion
-
 
 
     }

@@ -57,6 +57,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_LOCATION_USER_PATH;
+
 public class MainActivity extends AppCompatActivity implements MainActivityViewModel.Listener {
     private static final int LOCATION_PERMISSON_INT = 100;
     //For Photo From Camera and Gallery
@@ -390,6 +392,56 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewM
 
         } else {
             // Permission has already been granted
+            showToast("a7aaaa");
+            FusedLocationProviderClient  mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+            //region Save Location
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
+            final GeoFire geoFire = new GeoFire(ref);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            Log.e("A1","a1");
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                Log.e("A2","not null");
+
+                                geoFire.setLocation("aaaaaaa", new GeoLocation(location.getLatitude(),
+                                        location.getLongitude()), new GeoFire.CompletionListener() {
+                                    @Override
+                                    public void onComplete(String key, DatabaseError error) {
+                                        if (error != null) {
+                                        } else {
+                                        }
+                                    }
+                                });
+                            } else {
+                                Log.e("A2","a2");
+
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("AAAAAAAAAAAAAAAAAAAAA", e.getMessage());
+
+                }
+            });
+
+
+            //endregion
         }
     }
 

@@ -59,6 +59,7 @@
                 </FrameLayout>
 
                 <EditText
+                    android:text="ماريو ناجح"
                     android:id="@+id/ebt_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -68,6 +69,7 @@
                     android:textSize="20sp" />
 
                 <EditText
+                    android:text="01208847854"
                     android:id="@+id/ebt_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,6 +79,7 @@
                     android:textSize="20sp" />
 
                 <EditText
+                    android:text="01208847854"
                     android:id="@+id/ebt_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

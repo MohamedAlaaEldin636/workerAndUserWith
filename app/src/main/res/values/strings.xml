@@ -35,6 +35,7 @@
     <string name="ok">اسمح</string>
     <string name="no_loaction_user">عذرا لن تستفيد من نظام جلب اقرب العاملين بجانبك</string>
     <string name="succesful_loaction">تم السماح بنجاح</string>
+    <string name="No_Internet_connection">عفوا لايوجد اتصال بالاانترنت</string>
     <string-array name="professions_list">
         <item>سباك</item>
         <item>نجار</item>
