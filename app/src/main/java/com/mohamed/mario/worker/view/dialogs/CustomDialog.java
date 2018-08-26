@@ -74,7 +74,7 @@ public class CustomDialog extends Dialog {
         setContentView(R.layout.dialog_custom);
         rootView = findViewById(R.id.rootView);
         if(type.equals("none")) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.user_register,
+            View view = LayoutInflater.from(getContext()).inflate(layoutRes,
                     (ViewGroup) rootView.findViewById(R.id.frameLayout), true);
         }
         title_textView=findViewById(R.id.dialog_title_txt);
@@ -100,9 +100,14 @@ public class CustomDialog extends Dialog {
     }
     public void setOnCancelClickLisner(  View.OnClickListener cancelButtonClick){
         dialog_negative_button.setOnClickListener(cancelButtonClick);
-
-
     }
 
+    public Button getDialog_postive_button() {
+        return dialog_postive_button;
+    }
+
+    public Button getDialog_negative_button() {
+        return dialog_negative_button;
+    }
 }
 

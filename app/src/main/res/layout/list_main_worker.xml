@@ -10,15 +10,19 @@
     app:cardCornerRadius="4dp">
 
     <LinearLayout
+        android:background="@drawable/worker_btn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <ImageView
+            tools:src="@drawable/workerbanner"
             android:id="@+id/worker_image_list"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="fitCenter" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+             />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,15 +45,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
+                <!--WhiteRatingStar-->
 
                 <RatingBar
+                    android:theme="@style/RatingBar"
                     android:id="@+id/worker_id_ratingbar"
-                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    style="@style/RatingBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:numStars="5" />
+                    android:numStars="5"
+                    />
 
                 <TextView
                     android:id="@+id/worker_pro_list"

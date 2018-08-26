@@ -16,10 +16,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
@@ -41,9 +43,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mohamed.mario.worker.R;
+import com.mohamed.mario.worker.model.Review;
 import com.mohamed.mario.worker.model.User;
 import com.mohamed.mario.worker.model.Worker;
 import com.mohamed.mario.worker.utils.CommonIntentsUtils;
+import com.mohamed.mario.worker.utils.DatabaseUtils;
 import com.mohamed.mario.worker.utils.NetworkUtils;
 import com.mohamed.mario.worker.utils.SharedPrefUtils;
 import com.mohamed.mario.worker.view.dialogs.CustomDialog;
@@ -58,7 +62,11 @@ import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_NAME;
 import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_PHOTO_LOCATION;
 import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_PHOTO_NAME;
 import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_QUERY_PHONE;
+import static com.mohamed.mario.worker.utils.DatabaseUtils.WORKERES_DATABASE_PHOTO_LOCATION;
+import static com.mohamed.mario.worker.utils.DatabaseUtils.WORKERES_DATABASE_PHOTO_NAME;
+import static com.mohamed.mario.worker.utils.DatabaseUtils.WORKER_DATABASE_NAME;
 import static com.mohamed.mario.worker.utils.SharedPrefUtils.VALUE_KEY_USER;
+import static com.mohamed.mario.worker.utils.SharedPrefUtils.VALUE_KEY_WORKER;
 
 public class MainActivityViewModel extends AndroidViewModel {
     //Firebase
@@ -67,10 +75,10 @@ public class MainActivityViewModel extends AndroidViewModel {
     private FusedLocationProviderClient mFusedLocationClient;
     //Firebase Storage
     private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference userImageRef;
-
+    private StorageReference imageRef;
+    //The add Photo Uri
     public Uri fullPhotoUri;
-
+   // The listener from Activity
     private Listener listener;
 
     public MainActivityViewModel(@NonNull Application application) {
@@ -93,14 +101,17 @@ public class MainActivityViewModel extends AndroidViewModel {
 
         if (loginInfo.equals(VALUE_KEY_USER)) {
             listener.launchActivity(true);
-        } else if (loginInfo.equals(SharedPrefUtils.VALUE_KEY_WORKER)) {
+        } else if (loginInfo.equals(VALUE_KEY_WORKER)) {
             listener.launchActivity(false);
         } // Else do nothing.
     }
 
-
     public interface Listener {
         void launchActivity(boolean isUser);
+
+        //User --> True
+        //Worker --> False
+        void loginToStartActivity(boolean isUserWorker);
 
         Activity getActivity();
 
@@ -108,7 +119,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     // ---- Direct Xml Methods
-
+    //region Buttons Clicks
     public void userClick(View view) {
         Context context = getApplication().getApplicationContext();
 
@@ -184,6 +195,7 @@ public class MainActivityViewModel extends AndroidViewModel {
                 //////////////////
                 if (fullPhotoUri == null) {
                     //We Will Put Default Photo TODO
+                    fullPhotoUri=Uri.parse("def");
                 }
                 if (TextUtils.isEmpty(ebt_username.getText().toString()) || ebt_username.getText().length() < 5) {
                     listener.showToast(context.getResources().getString(R.string.You_Must_youname));
@@ -206,11 +218,173 @@ public class MainActivityViewModel extends AndroidViewModel {
                                 users_list.add(singleSnapshot.getValue(User.class));
                             }
                             if (users_list.size() == 0) {
+                                customDialog.getDialog_postive_button().setClickable(false);
+                                customDialog.getDialog_negative_button().setClickable(false);
                                 writeNewUser(ebt_username.getText().toString(),
                                         ebt_phone.getText().toString(), ebt_password.getText().toString()
                                         , fullPhotoUri.toString(), null, null, null, ""
                                         , frame_loading, customDialog);
                                 listener.showToast(context.getResources().getString(R.string.successMessage));
+                                listener.loginToStartActivity(true);
+
+
+                            } else {
+                                listener.showToast(context.getResources().getString(R.string.this_phone_has_registerd));
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e("Mario", "onCancelled", databaseError.toException());
+                        }
+                    });
+                    //////////////////////////
+
+
+                }
+            }
+        });
+
+        customDialog.setOnCancelClickLisner(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customDialog.dismiss();
+            }
+        });
+//endregion
+
+
+    }
+    public void wokerClick(View view) {
+        Context context = getApplication().getApplicationContext();
+
+        final CustomDialog customDialog = new CustomDialog(listener.getActivity(), R.layout.worker_register,
+                context.getResources().getString(R.string.workerregistration), context.getResources().getString(R.string.data_enter)
+                , context.getResources().getString(R.string.submit), context.getResources().getString(R.string.cancel));
+
+        customDialog.show();
+
+
+        View register_layout = customDialog.getRootView();
+        final ImageView user_photo = register_layout.findViewById(R.id.imageView);
+        final TextView txt_label = register_layout.findViewById(R.id.txt_label);
+        final EditText ebt_username = register_layout.findViewById(R.id.ebt_username);
+        final EditText ebt_phone = register_layout.findViewById(R.id.ebt_phone);
+        final EditText ebt_password = register_layout.findViewById(R.id.ebt_password);
+        final FrameLayout frame_loading = register_layout.findViewById(R.id.frame_loading);
+        Spinner professionSpinner = register_layout.findViewById(R.id.spinnerSeletor);
+
+
+        //region Spinner Listner
+        final int[] profession = {0};
+        professionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                profession[0] = position;
+                String[] s = getApplication().getBaseContext().getResources().getStringArray(R.array.professions_list);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //endregion
+
+        // For Handel On Activity Result
+        CommonIntentsUtils.layout = register_layout;
+        CommonIntentsUtils.IMAGE_ID = user_photo.getId();
+        CommonIntentsUtils.Txt_ID = txt_label.getId();
+
+        //region user_photo click
+        user_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //ContextWrapper For Them Background To Style Of Popupmenu
+                ContextThemeWrapper ctw = new ContextThemeWrapper(context, R.style.PopupMenu);
+                PopupMenu popupMenu = new PopupMenu(ctw, user_photo);
+                popupMenu.inflate(R.menu.popup_menu_camera_or_gallery);
+                popupMenu.show();         //We need to Show it
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.action_gallery) {
+                            fullPhotoUri = null;
+                            CommonIntentsUtils.getImageFromGallery(listener.getActivity(),
+                                    context.getResources().getString(R.string.Get_From_phone)
+                                    , CommonIntentsUtils.REQUSER_CODE_Gallery);
+
+                        } else if (item.getItemId() == R.id.action_camera) {
+                            fullPhotoUri = null;
+                            File imageFile = null;
+                            try {
+                                imageFile = CommonIntentsUtils.createImageFile(listener.getActivity());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // to get file path isa. -> imageFile.getAbsolutePath();
+                            fullPhotoUri = FileProvider.getUriForFile(
+                                    context,
+                                    "com.mohamed.mario.worker.fileprovider",
+                                    imageFile);
+                            CommonIntentsUtils.getImageFromCamera(listener.getActivity(), context.getResources().getString(R.string.Get_From_Camera)
+                                    , fullPhotoUri, CommonIntentsUtils.REQUSER_CODE_CAMERA);
+                        }
+
+                        return true;
+                    }
+                });
+            }
+
+        });
+        //endregion
+
+
+        //region Button Clicks
+        // oK Button
+        customDialog.setOnPositiveClickLisner(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //////////////////////////
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(WORKER_DATABASE_NAME);
+                //////////////////
+                if (fullPhotoUri == null) {
+                    //We Will Put Default Photo TODO
+                    fullPhotoUri=Uri.parse("def");
+                }
+                if (TextUtils.isEmpty(ebt_username.getText().toString()) || ebt_username.getText().length() < 5) {
+                    listener.showToast(context.getResources().getString(R.string.You_Must_youname));
+                } else if (TextUtils.isEmpty(ebt_phone.getText().toString()) || ebt_phone.getText().length() != 11) {
+                    listener.showToast(context.getResources().getString(R.string.You_Must_yourphone));
+                } else if (TextUtils.isEmpty(ebt_password.getText().toString()) || ebt_password.getText().length() < 8) {
+                    listener.showToast(context.getResources().getString(R.string.You_Must_yourpassword));
+
+                } else if (TextUtils.isEmpty(ebt_password.getText().toString()) || ebt_password.getText().length() < 8) {
+                    listener.showToast(context.getResources().getString(R.string.You_Must_yourpassword));
+
+                } else {
+                    ////////////////////////////Check If Same user in database
+                    Query phoneQuery = ref.orderByChild(USERES_DATABASE_QUERY_PHONE).equalTo(ebt_phone.getText().toString());
+                    phoneQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            // If user added no need to add more we will print message
+                            List<Worker> users_list = new ArrayList<>();
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                users_list.add(singleSnapshot.getValue(Worker.class));
+                            }
+                            if (users_list.size() == 0) {
+                                customDialog.getDialog_postive_button().setClickable(false);
+                                customDialog.getDialog_negative_button().setClickable(false);
+                                writeNewWorker(ebt_username.getText().toString(),
+                                        ebt_password.getText().toString(),ebt_phone.getText().toString()
+                                        , "", fullPhotoUri.toString(), String.valueOf(profession[0]),
+                                        ""
+                                        , null, null, 0, 0, frame_loading, customDialog);
+                                listener.showToast(context.getResources().getString(R.string.successMessage));
+                                listener.loginToStartActivity(false);
                              /*  customDialog.dismiss();
                                 frame_loading.setVisibility(View.GONE);*/
                             } else {
@@ -241,9 +415,93 @@ public class MainActivityViewModel extends AndroidViewModel {
 
 
     }
-
+    //endregion
 
     //For FirebaseAddUseres
+    //region FireBase Add Useres , Workers
+    private void writeNewWorker(
+            String name, String password, String phone, String location,
+            String personalImage, String profession, String description,
+            ArrayList<String> workImages, Review review, float rate, int ViewedBy
+            , FrameLayout frame_loading, CustomDialog customDialog) {
+
+        final Worker worker = new Worker(name, password, phone, location, personalImage,
+                profession, description
+                , workImages, review, rate, ViewedBy);
+        frame_loading.setVisibility(View.VISIBLE);
+        //region Save Image
+        imageRef = storage.getReference().child(WORKERES_DATABASE_PHOTO_LOCATION
+                + phone + WORKERES_DATABASE_PHOTO_NAME);
+        Uri file = Uri.parse(personalImage);
+        //    Uri file = Uri.parse(personalImage);
+        //here the image will uploaded
+        UploadTask uploadTask = imageRef.putFile(file);
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                return imageRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    worker.setPersonalImage(task.getResult().toString());
+                    //UPload USer
+                    mDatabase.child(WORKER_DATABASE_NAME).child(phone).setValue(worker);
+
+                    customDialog.dismiss();
+                } else {
+                    mDatabase.child(WORKER_DATABASE_NAME).child(phone).setValue(worker);
+
+                    customDialog.dismiss();
+
+                }
+            }
+        });
+
+
+        //endregion
+
+        //Getting the loaction and save it we will save loaction in Path  path/to/geofire so that we
+        //Query it we will use the Path
+        //region Save Location
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(DatabaseUtils.WORKERS_DATABASE_LOCATION_WORKER_PATH);
+        final GeoFire geoFire = new GeoFire(ref);
+        if (ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(listener.getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            geoFire.setLocation(phone, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
+                                @Override
+                                public void onComplete(String key, DatabaseError error) {
+                                    if (error != null) {
+                                    } else {
+                                    }
+                                }
+                            });
+                        } else {
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
+        //endregion
+
+    }
+
     private void writeNewUser(String name, final String phone, String password, String personalImage, ArrayList<Worker> workersRated,
                               ArrayList<Worker> workersReviewed, ArrayList<Worker>
                                       lastFiveWorkersVisitedByThisUser, String location,
@@ -256,18 +514,18 @@ public class MainActivityViewModel extends AndroidViewModel {
 
         frame_loading.setVisibility(View.VISIBLE);
         //region Save Image
-        userImageRef = storage.getReference().child(USERES_DATABASE_PHOTO_LOCATION + phone + USERES_DATABASE_PHOTO_NAME);
+        imageRef = storage.getReference().child(USERES_DATABASE_PHOTO_LOCATION + phone + USERES_DATABASE_PHOTO_NAME);
         Uri file = Uri.parse(personalImage);
         //    Uri file = Uri.parse(personalImage);
         //here the image will uploaded
-        UploadTask uploadTask = userImageRef.putFile(file);
+        UploadTask uploadTask = imageRef.putFile(file);
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
                     throw task.getException();
                 }
-                return userImageRef.getDownloadUrl();
+                return imageRef.getDownloadUrl();
             }
         }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
@@ -276,7 +534,6 @@ public class MainActivityViewModel extends AndroidViewModel {
                     user.setPersonalImage(task.getResult().toString());
                     //UPload USer
                     mDatabase.child(USERES_DATABASE_NAME).child(phone).setValue(user);
-                    SharedPrefUtils.setLoginData(getApplication().getApplicationContext(), VALUE_KEY_USER, phone);
 
                     customDialog.dismiss();
                 } else {
@@ -291,16 +548,52 @@ public class MainActivityViewModel extends AndroidViewModel {
 
         //endregion
 
+
         //Getting the loaction and save it we will save loaction in Path  path/to/geofire so that we
         //Query it we will use the Path
-
-
-        //region Save To Pre
-
+        //region Save Location
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(USERES_DATABASE_LOCATION_USER_PATH);
+        final GeoFire geoFire = new GeoFire(ref);
+        if (ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getApplication().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(listener.getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            geoFire.setLocation(phone, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
+                                @Override
+                                public void onComplete(String key, DatabaseError error) {
+                                    if (error != null) {
+                                    } else {
+                                    }
+                                }
+                            });
+                        } else {
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
         //endregion
 
 
-    }
 
+    }
+    //endregion
 
 }

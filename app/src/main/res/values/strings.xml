@@ -36,9 +36,35 @@
     <string name="no_loaction_user">عذرا لن تستفيد من نظام جلب اقرب العاملين بجانبك</string>
     <string name="succesful_loaction">تم السماح بنجاح</string>
     <string name="No_Internet_connection">عفوا لايوجد اتصال بالاانترنت</string>
+    <string name="workerregistration">تسجيل العامل</string>
+    <string name="explian">هذا التطبيق يساعد علي توظيف اقاربك وعرض مواهبهم في المهن الخاصة بهم الي النور</string>
+    <string name="phone">ادخل رقم الهاتف</string>
+    <string name="type">نوع المستخدم</string>
+    <string name="remmberme">تذكرنى</string>
+    <string name="phonedontexsist">عفوا لا يوجد رقم هاتف مثل هذا</string>
+    <string name="successlogin">تم الدخول بنجاح</string>
+    <string name="passwordwrong">عفوا كلمة السر غير صحيحة</string>
+    <string name="emptyuserprPhone">عفوا لا يمكن ترك حقل رقم السري فارغ</string>
+    <string name="phonempty">عفوا لا يمكن ترك حقل رقم الهاتف فارغ</string>
+    <string name="signin">تسجيل الدخول</string>
+    <string name="donot_hava_acc">لا امتلك حساب ؟</string>
+    <string name="press_here"><u>حساب جديد</u></string>
+    <string name="page_workeres">العاملون بقربك</string>
+    <string name="serach_queryhint">ابحث عن عمال</string>
     <string-array name="professions_list">
         <item>سباك</item>
         <item>نجار</item>
         <item>حداد</item>
+        <item>حداد1</item>
+        <item>حداد2</item>
+        <item>حداد3</item>
+        <item>حداد4</item>
+        <item>حداد5</item>
+        <item>حداد6</item>
+        <item>حداد7</item>
+    </string-array>
+    <string-array name="type_list">
+        <item>عامل</item>
+        <item>مستخدم</item>
     </string-array>
 </resources>

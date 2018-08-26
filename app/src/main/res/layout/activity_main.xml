@@ -12,14 +12,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".view.MainActivity">
 
+    <ImageView
+        android:background="@drawable/border_black"
+        android:layout_margin="20dp"
+        android:layout_weight="8"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:src="@drawable/workerbanner"/>
 
     <LinearLayout
-        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:layout_gravity="bottom"
         android:id="@+id/main_btn_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginBottom="15dp"
         android:orientation="horizontal">
 
@@ -33,7 +42,7 @@
             android:background="@drawable/user"
             android:text="@string/worker"
             android:textColor="@android:color/white"
-            android:onClick="workerClick"/>
+            android:onClick="@{(v) -> viewModel.wokerClick(v)}"/>
 
         <Button
             android:id="@+id/btn_user"
