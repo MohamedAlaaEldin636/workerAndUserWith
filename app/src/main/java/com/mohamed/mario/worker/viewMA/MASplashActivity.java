@@ -11,7 +11,6 @@ import android.view.animation.Animation;
 
 import com.mohamed.mario.worker.R;
 import com.mohamed.mario.worker.databinding.ActivityMaSplashBinding;
-import com.mohamed.mario.worker.view.LoginActivity;
 import com.mohamed.mario.worker.view.WorkerMainActivity;
 import com.mohamed.mario.worker.viewModelFactory.MASplashActivityViewModelFactory;
 import com.mohamed.mario.worker.viewModelMa.MASplashActivityViewModel;
