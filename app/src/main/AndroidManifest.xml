@@ -11,6 +11,7 @@
     <uses-feature android:name="android.hardware.camera"
         android:required="true" />
     <application
+        android:name=".BaseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,14 +21,11 @@
         <activity android:name=".view.MainActivity">
         </activity>
         <activity android:name=".view.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".view.LoginActivity"/>
         <activity android:name=".view.WorkerMainActivity"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.mohamed.mario.worker.fileprovider"
@@ -37,6 +35,17 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <!-- Starting from here for MA -->
+        <activity android:name=".viewMA.MASplashActivity"
+            android:screenOrientation="sensorPortrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".viewMA.MALoginActivity" />
+        <activity android:name=".viewMA.MARegisterActivity" />
     </application>
     <meta-data
         android:name="com.google.android.geo.API_KEY"

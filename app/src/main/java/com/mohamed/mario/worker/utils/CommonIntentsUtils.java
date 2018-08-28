@@ -13,13 +13,16 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Mohamed on 6/23/2018.
+ *
  */
 public class CommonIntentsUtils {
-    public static final int REQUSER_CODE_Gallery = 15;
-    public static final int REQUSER_CODE_CAMERA = 16;
+
+    public static final int REQUEST_CODE_GALLERY = 15;
+    public static final int REQUEST_CODE_CAMERA = 16;
     public static  int IMAGE_ID = 0;
     public static  int Txt_ID = 0;
     public static View layout ;
@@ -33,24 +36,25 @@ public class CommonIntentsUtils {
      * Bitmap thumbnail = intent.getParcelable("data");
      * Uri fullPhotoUri = intent.getData();
      *
-     * @param fragment           instance of fragment to call start activity for result.
+     * @param activity           instance of activity to call start activity for result.
      * @param intentChooserTitle if not null we will make intent chooser isa,
      *                           else we will launch immediately.
      * @param requestCode        request code for activity result.
      */
-    public static void getImageFromGallery(Activity activityCompat,
-                                           String intentChooserTitle, int requestCode) {
-        Context context = activityCompat.getBaseContext();
+    public static void getImageFromGallery(Activity activity,
+                                           String intentChooserTitle,
+                                           int requestCode) {
+        Context context = activity.getBaseContext();
 
         if (context != null) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 if (intentChooserTitle != null) {
-                    activityCompat.startActivityForResult(
+                    activity.startActivityForResult(
                             Intent.createChooser(intent, intentChooserTitle), requestCode);
                 } else {
-                    activityCompat.startActivityForResult(intent, requestCode);
+                    activity.startActivityForResult(intent, requestCode);
                 }
             }
         }
@@ -70,44 +74,35 @@ public class CommonIntentsUtils {
      * 2- to get the full-size photo
      * it will be isa in the provided extraOutput Uri param.
      *
-     * @param fragment           instance of fragment to call start activity for result.
+     * @param activity           instance of activity to call start activity for result.
      * @param intentChooserTitle if not null we will make intent chooser isa,
      *                           else we will launch immediately.
      * @param extraOutput        uri to put full-sized photo in it.
      * @param requestCode        requestCode for activity result.
      */
-    public static void getImageFromCamera(Activity activityCompat, String intentChooserTitle,
-                                          Uri extraOutput, int requestCode) {
-        Context context = activityCompat.getBaseContext();
+    public static void getImageFromCamera(Activity activity,
+                                          String intentChooserTitle,
+                                          Uri extraOutput,
+                                          int requestCode) {
+        Context context = activity.getBaseContext();
 
         if (context != null) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, extraOutput);
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 if (intentChooserTitle != null) {
-                    activityCompat.startActivityForResult(
+                    activity.startActivityForResult(
                             Intent.createChooser(intent, intentChooserTitle), requestCode);
                 } else {
-                    activityCompat.startActivityForResult(intent, requestCode);
+                    activity.startActivityForResult(intent, requestCode);
                 }
             }
         }
     }
-    public static void openCameraIntent(Activity activity) {
-        Context context=activity.getBaseContext();
-        Intent pictureIntent = new Intent(
-                MediaStore.ACTION_IMAGE_CAPTURE
-        );
-        if(pictureIntent.resolveActivity(context.getPackageManager()) != null) {
-            activity.  startActivityForResult(pictureIntent,
-                    REQUSER_CODE_CAMERA);
-        }
-    }
-
 
     public static File createImageFile(Activity activity) throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(

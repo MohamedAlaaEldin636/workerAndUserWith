@@ -1,4 +1,4 @@
-package com.mohamed.mario.worker.viewmodel;
+package com.mohamed.mario.worker.viewModelMa;
 
 import android.Manifest;
 import android.app.Activity;
@@ -51,6 +51,7 @@ import com.mohamed.mario.worker.utils.DatabaseUtils;
 import com.mohamed.mario.worker.utils.NetworkUtils;
 import com.mohamed.mario.worker.utils.SharedPrefUtils;
 import com.mohamed.mario.worker.view.dialogs.CustomDialog;
+import com.mohamed.mario.worker.viewmodel.MainActivityViewModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,68 +69,77 @@ import static com.mohamed.mario.worker.utils.DatabaseUtils.WORKER_DATABASE_NAME;
 import static com.mohamed.mario.worker.utils.SharedPrefUtils.VALUE_KEY_USER;
 import static com.mohamed.mario.worker.utils.SharedPrefUtils.VALUE_KEY_WORKER;
 
-@SuppressWarnings("all")
-public class MainActivityViewModel extends AndroidViewModel {
-    //Firebase
-    private DatabaseReference mDatabase;
-    //Loaction
-    private FusedLocationProviderClient mFusedLocationClient;
-    //Firebase Storage
-    private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private StorageReference imageRef;
-    //The add Photo Uri
-    public Uri fullPhotoUri;
-   // The listener from Activity
+/**
+ * Created by Mohamed on 8/28/2018.
+ *
+ */
+public class MARegisterActivityViewModel extends AndroidViewModel {
+
+    // --- Private Variables
+
     private Listener listener;
 
-    public MainActivityViewModel(@NonNull Application application) {
+    private DatabaseReference mDatabase;
+
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+
+    private StorageReference imageRef;
+
+    public Uri fullPhotoUri;
+
+    public MARegisterActivityViewModel(@NonNull Application application, Listener listener) {
         super(application);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication().getApplicationContext());
-    }
-
-    public void initSetup(Listener listener) {
         this.listener = listener;
 
-        // initial checks
-        // -- check if previous user or worker
+        // -- assign initial values
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(
+                getApplication().getApplicationContext());
+
+        // -- check if previous user or worker todo read comment inside that method
         checkIfPreviouslyRegistered();
     }
 
+    /** Inside {@link #MARegisterActivityViewModel(Application, Listener)} */
     private void checkIfPreviouslyRegistered() {
-        String loginInfo = SharedPrefUtils.getLoginData(getApplication().getApplicationContext());
+        // to-do which behaviou you really want, please read below comment ->
+        /*
+        if user wipes data in settings then one device can have multiple accounts
+        or if he removes cache, and that might happen since a log of apps, including system suggests
+        removing cahce data in case of low mempry so better save firebase token as list of strings in firebase
+        names bothUserAndWorkerFirebaseTokens
+        and on app launch, we check and request getting token, and if it matches a specific token
+        we will prevent phone from registering new account, and if that is the intended behaviour then add forgot password as well isa.
+        bs kda fe moshkela law fe new device eshtarah el user isa, fa seb 1 device can make several accounts 3ade
+        or whenever a login occurs we ensure same token and replace with prev if exists isa from firebase.
+         */
+
+        /*String loginInfo = SharedPrefUtils.getLoginData(getApplication().getApplicationContext());
 
         if (loginInfo.equals(VALUE_KEY_USER)) {
             listener.launchActivity(true);
         } else if (loginInfo.equals(VALUE_KEY_WORKER)) {
             listener.launchActivity(false);
-        } // Else do nothing.
+        } // Else do nothing.*/
     }
 
-    public interface Listener {
-        void launchActivity(boolean isUser);
+    //region Direct Xml Methods
 
-        //User --> True
-        //Worker --> False
-        void loginToStartActivity(boolean isUserWorker);
-
-        Activity getActivity();
-
-        void showToast(String msg);
-    }
-
-    // ---- Direct Xml Methods
-    //region Buttons Clicks
-    public void userClick(View view) {
+    public void userClick() {
         Context context = getApplication().getApplicationContext();
 
-        final CustomDialog customDialog = new CustomDialog(listener.getActivity(), R.layout.user_register,
-                context.getResources().getString(R.string.registeruser), context.getResources().getString(R.string.data_enter)
-                , context.getResources().getString(R.string.submit), context.getResources().getString(R.string.cancel));
+        final CustomDialog customDialog = new CustomDialog(
+                listener.getActivity(),
+                R.layout.user_register,
+                context.getResources().getString(R.string.registeruser),
+                context.getResources().getString(R.string.data_enter),
+                context.getResources().getString(R.string.submit),
+                context.getResources().getString(R.string.cancel));
 
         customDialog.show();
-
 
         View register_layout = customDialog.getRootView();
         final ImageView user_photo = register_layout.findViewById(R.id.imageView);
@@ -138,6 +148,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         final EditText ebt_phone = register_layout.findViewById(R.id.ebt_phone);
         final EditText ebt_password = register_layout.findViewById(R.id.ebt_password);
         final FrameLayout frame_loading = register_layout.findViewById(R.id.frame_loading);
+
         // For Handel On Activity Result
         CommonIntentsUtils.layout = register_layout;
         CommonIntentsUtils.IMAGE_ID = user_photo.getId();
@@ -257,6 +268,8 @@ public class MainActivityViewModel extends AndroidViewModel {
 
 
     }
+
+
     public void wokerClick(View view) {
         Context context = getApplication().getApplicationContext();
 
@@ -597,5 +610,20 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     }
     //endregion
+
+
+
+    // ----- View Model Interface
+
+    public interface Listener {
+
+        // User --> True, Worker --> False
+        void loginToStartActivity(boolean isUserWorker);
+
+        Activity getActivity();
+
+        void showToast(String s);
+
+    }
 
 }

@@ -51,6 +51,7 @@
     <string name="press_here"><u>حساب جديد</u></string>
     <string name="page_workeres">العاملون بقربك</string>
     <string name="serach_queryhint">ابحث عن عمال</string>
+    <string name="try_again_and_check_internet_connection">حاول مرة اخرى و تاكد من شبكة الانترنت</string>
     <string-array name="professions_list">
         <item>سباك</item>
         <item>نجار</item>

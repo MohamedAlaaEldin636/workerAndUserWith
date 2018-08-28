@@ -34,7 +34,7 @@ public class SplashActivity extends AppCompatActivity implements SplashActivityV
         binding.setViewModel(viewModel);
         ImageView animated_iamge = findViewById(R.id.imageViewSplash_logo);
         TextView animated_text = findViewById(R.id.text_explian_Splash);
-        viewModel.StartAnimation(animated_iamge, animated_text);
+        viewModel.startAnimation(animated_iamge, animated_text);
     }
 
 

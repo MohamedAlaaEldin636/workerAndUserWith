@@ -68,7 +68,7 @@ public class WorkerMainActivity extends AppCompatActivity implements WorkerAdapt
 
 
 
-        // --- Setup recyclerView
+        // -- Setup recyclerView
         setupUIElements();
         setupRecyclerView();
         // -- Fetch Data from firebase to RC

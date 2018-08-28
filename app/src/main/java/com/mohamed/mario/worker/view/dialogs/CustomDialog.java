@@ -32,10 +32,10 @@ public class CustomDialog extends Dialog {
     private String type="none";
     private View.OnClickListener okButtonClick;
     private View.OnClickListener cancelButtonClick;
-    View rootView;
+    private View rootView;
     //Views
-    TextView title_textView,message_textView;
-    Button dialog_postive_button,dialog_negative_button;
+    private TextView title_textView,message_textView;
+    private Button dialog_postive_button,dialog_negative_button;
 
 
     public CustomDialog(@NonNull Context context, int layoutRes, String title,
@@ -48,6 +48,7 @@ public class CustomDialog extends Dialog {
         this.cancelName = cancelName;
         this.type= type;
     }
+
     public CustomDialog(@NonNull Context context, int layoutRes, String title,
                         String message, String positiveName, String cancelName) {
         super(context);
@@ -56,20 +57,11 @@ public class CustomDialog extends Dialog {
         this.message = message;
         this.positiveName = positiveName;
         this.cancelName = cancelName;
-
     }
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-
 
         setContentView(R.layout.dialog_custom);
         rootView = findViewById(R.id.rootView);
@@ -77,18 +69,15 @@ public class CustomDialog extends Dialog {
             View view = LayoutInflater.from(getContext()).inflate(layoutRes,
                     (ViewGroup) rootView.findViewById(R.id.frameLayout), true);
         }
-        title_textView=findViewById(R.id.dialog_title_txt);
-        message_textView=findViewById(R.id.dialog_message_txt);
-        dialog_postive_button=findViewById(R.id.dialog_postive_button);
-        dialog_negative_button=findViewById(R.id.dialog_negative_button);
-
+        title_textView = findViewById(R.id.dialog_title_txt);
+        message_textView = findViewById(R.id.dialog_message_txt);
+        dialog_postive_button = findViewById(R.id.dialog_postive_button);
+        dialog_negative_button = findViewById(R.id.dialog_negative_button);
 
         title_textView.setText(title);
         message_textView.setText(message);
         dialog_postive_button.setText(positiveName);
         dialog_negative_button.setText(cancelName);
-
-
     }
 
     public View getRootView(){

@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android">
-    <translate
+    <!--<translate
         android:fromXDelta="-400"
-        android:toXDelta="0"
-        />
+        android:toXDelta="0"/>-->
+
+    <!--
+    Both below translations together
+    form accurate from left screen edge to original position
+     only if parent(container of element) is match_parent to device's screen
+     -->
+
+    <!-- half parent width -->
+    <translate
+        android:fromXDelta="-50%p"
+        android:toXDelta="-0%p"/>
+    <!-- half element itself width -->
+    <translate
+        android:fromXDelta="-50%"
+        android:toXDelta="-0%"/>
 </set>

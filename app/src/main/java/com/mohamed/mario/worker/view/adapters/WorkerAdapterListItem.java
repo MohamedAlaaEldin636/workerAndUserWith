@@ -90,7 +90,8 @@ public class WorkerAdapterListItem extends RecyclerView.Adapter<WorkerAdapterLis
                     users_list.add(singleSnapshot.getValue(Worker.class));
                 }
                 Worker worker=users_list.get(0);
-                Picasso.get().load(worker.getPersonalImage()).into(holder.worker_image_list);
+                Picasso.get().load(worker.getPersonalImage() == null || worker.getPersonalImage().isEmpty() ? "def" : worker.getPersonalImage())
+                        .into(holder.worker_image_list);
                 holder.worker_name_list.setText(worker.getName());
                 String profession=context.getResources().getStringArray(R.array.professions_list)
                         [Integer.valueOf(worker.getProfession())];

@@ -58,7 +58,12 @@ dependencies {
     //Firebase Storage
     implementation  'com.google.firebase:firebase-storage:11.8.0'
 
+    implementation "com.google.firebase:firebase-auth:11.8.0"
 
+
+
+    // Timber
+    implementation 'com.jakewharton.timber:timber:4.7.0'
 
 }
 

@@ -31,8 +31,8 @@ import static com.mohamed.mario.worker.utils.DatabaseUtils.WORKER_DATABASE_NAME;
 
 public class SplashActivityViewModel extends AndroidViewModel {
 
-    private final int SECOND_FRO_LUNCH = 5;
-    long realsecond = SECOND_FRO_LUNCH * 1000;
+    private final int SECOND_FRO_LUNCH = 3;
+    long realsecond = SECOND_FRO_LUNCH * 500;
 
 
     Listener listener;
@@ -49,21 +49,28 @@ public class SplashActivityViewModel extends AndroidViewModel {
         this.listener = listener;
     }
 
-    public void StartAnimation(ImageView animated_Image, TextView animated_text) {
+    public void startAnimation(ImageView animated_Image, TextView animated_text) {
 
-        Animation animS = AnimationUtils.loadAnimation(getApplication().getApplicationContext(), R.anim.scale_splashscreen_anim);
+        Animation animS = AnimationUtils.loadAnimation(getApplication().getApplicationContext(),
+                R.anim.scale_splashscreen_anim);
         animS.setDuration(realsecond);
-        //    animated_Image.setAnimation(animS);
-        //      animated_text.setAnimation(animS);
-
-        //For Animation
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        animS.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void run() {
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
                 CheckPref();
             }
-        }, realsecond);
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+
+        animated_Image.setAnimation(animS);
+        //animated_text.setAnimation(animS);
+
+        animS.start();
     }
 
 

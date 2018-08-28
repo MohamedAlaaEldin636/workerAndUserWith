@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha=".5"
+            android:background="@drawable/background"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLoading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha=".6"
+            android:background="@color/material_color_white"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+        <ScrollView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/loginPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_edittext"
+                    android:drawableLeft="@drawable/ic_phone"
+                    android:drawableStart="@drawable/ic_phone"
+                    android:gravity="center"
+                    android:hint="@string/phone"
+                    android:inputType="phone"
+                    android:textAlignment="center"
+                    android:textColor="@color/material_color_white"
+                    android:textColorHint="@color/material_color_light_green_400" />
+
+                <EditText
+                    android:id="@+id/loginPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_edittext"
+                    android:drawableLeft="@drawable/ic_password"
+                    android:drawableStart="@drawable/ic_password"
+                    android:gravity="end"
+                    android:hint="@string/password_user"
+                    android:inputType="textPassword"
+                    android:textAlignment="center"
+                    android:textColor="@color/material_color_white"
+                    android:textColorHint="@color/material_color_light_green_400" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="horizontal">
+
+                    <Spinner
+
+                        android:id="@+id/spinnerSelectorLogin"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:entries="@array/type_list" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/type"
+                        android:textColor="#9e4343"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+
+                    tools:ignore="RtlHardcoded">
+
+                    <CheckBox
+                        android:id="@+id/checkboxLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginRight="20dp"
+                        android:text="@string/remmberme"
+                        android:textColor="#9e4343"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+
+                <Button
+                    android:id="@+id/buttonLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/rounded_edittext"
+                    android:onClick="performLoginIfPossible"
+                    android:text="@string/signin"
+                    android:textColor="@color/material_color_white"
+                    android:textSize="25sp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:onClick="goToRegistrationActivity"
+                        android:text="@string/press_here"
+                        android:textColor="@color/material_color_blue_900"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/donot_hava_acc"
+                        android:textColor="#9e4343"
+                        android:textSize="23sp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</layout>

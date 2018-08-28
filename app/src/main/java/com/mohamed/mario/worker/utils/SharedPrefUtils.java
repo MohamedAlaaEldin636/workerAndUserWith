@@ -20,8 +20,8 @@ public class SharedPrefUtils {
     private static final String KEY_LOGIN_REMMBERME = "REMMBERME";
     //pref constant Values
     public static final String VALUE_KEY_LOGIN = "NONE";
-    public static final String VALUE_KEY_WORKER = "Worker";
-    public static final String VALUE_KEY_USER = "User";
+    public static final String VALUE_KEY_WORKER = DatabaseUtils.WORKER_DATABASE_NAME;
+    public static final String VALUE_KEY_USER = DatabaseUtils.USERES_DATABASE_NAME;
 
     public static String getLoginData(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(FILE_GENERAL, Context.MODE_PRIVATE);
