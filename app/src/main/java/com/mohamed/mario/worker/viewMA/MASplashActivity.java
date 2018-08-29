@@ -107,7 +107,7 @@ public class MASplashActivity extends AppCompatActivity implements MASplashActiv
     public void startHomeActivityForUserOrWorker(int type) {
         if (type == MASplashActivityViewModel.WORKER_TYPE) {
             // -- Worker
-            Intent intent = new Intent(this, WorkerMainActivity.class);
+            Intent intent = new Intent(this, MAWorkerHomeActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();

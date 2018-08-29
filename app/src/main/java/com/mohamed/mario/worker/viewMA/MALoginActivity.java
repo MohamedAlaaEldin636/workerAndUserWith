@@ -150,7 +150,7 @@ public class MALoginActivity extends AppCompatActivity implements MALoginActivit
     public void performLogin(int type) {
         if (LoginActivityViewModel.WOKRER_TYPE == type) {
             // -- Launch worker's home activity
-            Intent intent = new Intent(this, WorkerMainActivity.class);
+            Intent intent = new Intent(this, MAWorkerHomeActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();

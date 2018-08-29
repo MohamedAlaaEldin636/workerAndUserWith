@@ -1,34 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    Note we add margin only to 2 of 4 directions,
+    and in recyclerView make padding of other 2 direction
+    so we ensure there exactly 4dp between each item
+    else would make if rc scrolls vertically with 2 column
+    there will be more space exactly double between the 2 items
+-->
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="2dp"
-    android:elevation="8dp"
-    android:foreground="@drawable/item_click_effect"
-    app:cardCornerRadius="4dp">
 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:layout_marginLeft="4dp"
+    android:layout_marginTop="4dp"
+
+    app:elevation="8dp"
+
+    android:foreground="@drawable/item_click_effect"
+
+    android:clickable="true"
+    android:focusable="true"
+
+    app:cardCornerRadius="4dp"
+    tools:ignore="RtlHardcoded">
+
+    <!-- 280 dp or 2 items and 0.25 -->
     <LinearLayout
         android:background="@drawable/worker_btn"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         android:orientation="vertical">
 
         <ImageView
-            tools:src="@drawable/workerbanner"
             android:id="@+id/worker_image_list"
+
+            tools:src="@drawable/workerbanner"
+
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:adjustViewBounds="true"
-             />
+
+            android:adjustViewBounds="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#dfff"
             android:orientation="vertical"
+
             android:padding="3dp">
 
             <TextView
@@ -73,8 +97,8 @@
                     android:textStyle="bold"
                     tools:text="سباك" />
 
-
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

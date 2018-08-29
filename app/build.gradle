@@ -56,11 +56,9 @@ dependencies {
     //Play_services_Loaction
     implementation 'com.google.android.gms:play-services-location:11.8.0'
     //Firebase Storage
-    implementation  'com.google.firebase:firebase-storage:11.8.0'
+    implementation 'com.google.firebase:firebase-storage:11.8.0'
 
     implementation "com.google.firebase:firebase-auth:11.8.0"
-
-
 
     // Timber
     implementation 'com.jakewharton.timber:timber:4.7.0'

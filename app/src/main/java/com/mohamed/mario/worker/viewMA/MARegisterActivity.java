@@ -136,7 +136,7 @@ public class MARegisterActivity extends AppCompatActivity implements RegisterCus
         }else {
             finishAffinity();
 
-            Intent intent = new Intent(this, WorkerMainActivity.class);
+            Intent intent = new Intent(this, MAWorkerHomeActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
