@@ -26,8 +26,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.MainActivity"></activity>
-        <activity android:name=".view.SplashActivity"></activity>
+        <activity android:name=".view.MainActivity" />
+        <activity android:name=".view.SplashActivity" />
         <activity android:name=".view.LoginActivity" />
         <activity android:name=".view.WorkerMainActivity" />
 
@@ -44,16 +44,28 @@
         <activity
             android:name=".viewMA.MASplashActivity"
             android:screenOrientation="sensorPortrait">
+
+        </activity>
+        <activity android:name=".viewMA.MALoginActivity" />
+        <activity android:name=".viewMA.MARegisterActivity" />
+        <activity android:name=".viewMA.MAWorkerHomeActivity" />
+        <activity android:name=".smallTests.TestActivity" />
+        <!--
+        State hidden is used to remove initial onLaunch activity focus to views
+        for ex. for Edit Text Views isa.
+        -->
+        <activity
+            android:name=".viewMA.MAWorkerProfileActivity"
+            android:windowSoftInputMode="stateHidden">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".viewMA.MALoginActivity" />
-        <activity android:name=".viewMA.MARegisterActivity" />
-        <activity android:name=".viewMA.MAWorkerHomeActivity" />
-        <activity android:name=".smallTests.TestActivity"/>
+        <activity android:name=".viewMA.MASubProfileImageViewerActivity"/>
     </application>
 
 </manifest>

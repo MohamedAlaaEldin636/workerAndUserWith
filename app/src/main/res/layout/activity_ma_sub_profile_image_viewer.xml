@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+
+        tools:context="com.mohamed.mario.worker.viewMA.MASubProfileImageViewerActivity">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:src="@drawable/workerbanner"
+
+                android:scaleType="fitCenter"/>
+
+            <FrameLayout
+                android:id="@+id/noImageExistsFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:background="@android:color/white"
+
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="center"
+
+                    android:text="@string/no_image_exists"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            </FrameLayout>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/deleteFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:fabSize="mini"
+
+                android:layout_gravity="center"
+
+                android:src="@drawable/ic_delete_black_24dp"
+                android:tint="@android:color/white"
+
+                android:layout_margin="16dp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/galleryFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:fabSize="mini"
+
+                android:layout_gravity="center"
+
+                android:src="@drawable/ic_gallery_black_24dp"
+                android:tint="@android:color/white"
+
+                android:layout_margin="16dp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/cameraFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:fabSize="mini"
+
+                android:layout_gravity="center"
+
+                android:src="@drawable/ic_photo_camera_black_24dp"
+                android:tint="@android:color/white"
+
+                android:layout_margin="16dp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/doneFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:fabSize="mini"
+
+                android:layout_gravity="center"
+
+                android:src="@drawable/ic_done_black_24dp"
+                android:tint="@android:color/white"
+
+                android:layout_margin="16dp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp" />
+
+        </LinearLayout>
+
+</LinearLayout>
+
+</layout>

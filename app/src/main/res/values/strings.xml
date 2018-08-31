@@ -53,6 +53,10 @@
     <string name="serach_queryhint">ابحث عن عمال</string>
     <string name="try_again_and_check_internet_connection">حاول مرة اخرى و تاكد من شبكة الانترنت</string>
     <string name="no_workers_nearby">لا يوجد عمال بقربك</string>
+    <string name="profile">الحساب الشخصى</string>
+    <string name="no_internet_connection">لا توجد شبكة انترنت</string>
+    <string name="ensure_internet_connectivity_then_press_on_the_button">تاكد من التوصيل للشبكة ثم اضغط الزر</string>
+    <string name="no_image_exists">لا توجد صورة</string>
     <string-array name="professions_list">
         <item>سباك</item>
         <item>نجار</item>

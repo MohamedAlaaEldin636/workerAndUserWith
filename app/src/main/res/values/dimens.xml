@@ -5,4 +5,9 @@
     <dimen name="activity_vertical_small_margin">6dp</dimen>
     <dimen name="Pic_width">250dp</dimen>
     <dimen name="progressBar_margin_bttom">20dp</dimen>
+
+    <!-- Note below 2 dimens are related and always the 2nd one is the 1st one +4 -->
+    <dimen name="ma_rc_prev_work_img_item">140dp</dimen>
+    <dimen name="ma_rc_prev_work_img_item_space">8dp</dimen>
+    <dimen name="ma_rc_prev_work_img_item_with_padding">148dp</dimen>
 </resources>

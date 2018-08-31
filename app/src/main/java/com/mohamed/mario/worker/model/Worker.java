@@ -2,10 +2,11 @@ package com.mohamed.mario.worker.model;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 @IgnoreExtraProperties
-public class Worker {
+public class Worker implements Serializable {
 
     private String name;
     private String password;
@@ -21,12 +22,12 @@ public class Worker {
      * Max 5 images
      */
     private ArrayList<String> workImages;
-    private Review review;
+    private ArrayList<Review> reviewArrayList;
     private float rate;
     // counter
     private int ViewedBy;
 
-    public Worker(String name, String password, String phone, String location, String personalImage, String profession, String description, ArrayList<String> workImages, Review review, float rate, int viewedBy) {
+    public Worker(String name, String password, String phone, String location, String personalImage, String profession, String description, ArrayList<String> workImages, ArrayList<Review> reviewArrayList, float rate, int viewedBy) {
         this.name = name;
         this.password = password;
         this.phone = phone;
@@ -35,7 +36,7 @@ public class Worker {
         this.profession = profession;
         this.description = description;
         this.workImages = workImages;
-        this.review = review;
+        this.reviewArrayList = reviewArrayList;
         this.rate = rate;
         ViewedBy = viewedBy;
     }
@@ -107,12 +108,12 @@ public class Worker {
         this.workImages = workImages;
     }
 
-    public Review getReview() {
-        return review;
+    public ArrayList<Review> getReviewArrayList() {
+        return reviewArrayList;
     }
 
-    public void setReview(Review review) {
-        this.review = review;
+    public void setReviewArrayList(ArrayList<Review> reviewArrayList) {
+        this.reviewArrayList = reviewArrayList;
     }
 
     public float getRate() {

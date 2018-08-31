@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Note we add margin only to 2 of 4 directions,
+    and in recyclerView make padding of other 2 direction
+    so we ensure there exactly 4dp between each item
+    else would make if rc scrolls vertically with 2 column
+    there will be more space exactly double between the 2 items
+-->
+<layout>
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+
+        android:layout_width="@dimen/ma_rc_prev_work_img_item"
+        android:layout_height="@dimen/ma_rc_prev_work_img_item"
+
+        android:layout_marginLeft="@dimen/ma_rc_prev_work_img_item_space"
+        android:layout_marginTop="@dimen/ma_rc_prev_work_img_item_space"
+
+        app:elevation="4dp"
+
+        android:foreground="@drawable/item_click_effect"
+
+        android:clickable="true"
+        android:focusable="true"
+
+        app:cardCornerRadius="8dp"
+        tools:ignore="RtlHardcoded">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:src="@drawable/workerbanner"
+
+                android:scaleType="fitCenter" />
+
+            <LinearLayout
+                android:id="@+id/noImageLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:orientation="vertical"
+
+                android:background="#9E9E9E"
+
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/cameraFab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    app:fabSize="mini"
+
+                    android:layout_gravity="center"
+
+                    android:src="@drawable/ic_photo_camera_black_24dp"
+                    android:tint="@android:color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/galleryFab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    app:fabSize="mini"
+
+                    android:layout_gravity="center"
+
+                    android:src="@drawable/ic_gallery_black_24dp"
+                    android:tint="@android:color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </android.support.v7.widget.CardView>
+
+</layout>

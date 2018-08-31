@@ -2,4 +2,6 @@
 <resources>
     <!-- Used for SearchView -->
     <item name="search_edit_frame" type="id"/>
+
+    <item name="visible" type="id" />
 </resources>

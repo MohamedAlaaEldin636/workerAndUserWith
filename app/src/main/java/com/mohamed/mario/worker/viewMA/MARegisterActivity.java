@@ -146,14 +146,14 @@ public class MARegisterActivity extends AppCompatActivity implements RegisterCus
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null){
-            Timber.v("Intent is null that came from onActivityResult()");
-
-            return;
-        }
-
         if (requestCode == CommonIntentsUtils.REQUEST_CODE_GALLERY
                 && resultCode == RESULT_OK) {
+            if (data == null){
+                Timber.v("Intent is null that came from onActivityResult()");
+
+                return;
+            }
+
             registerCustomDialog.handleOnActivityResult(
                     true, data);
         }else if (requestCode == CommonIntentsUtils.REQUEST_CODE_CAMERA

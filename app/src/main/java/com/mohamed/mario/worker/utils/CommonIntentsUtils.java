@@ -93,7 +93,7 @@ public class CommonIntentsUtils {
                 if (intentChooserTitle != null) {
                     activity.startActivityForResult(
                             Intent.createChooser(intent, intentChooserTitle), requestCode);
-                } else {
+                }else {
                     activity.startActivityForResult(intent, requestCode);
                 }
             }

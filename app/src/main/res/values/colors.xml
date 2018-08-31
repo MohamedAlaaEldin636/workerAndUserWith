@@ -7,4 +7,6 @@
     <color name="favoriteColor">#03bcc9</color>
     <color name="textColors">#666666</color>
     <color name="actionBar"> #cccccc</color>
+
+    <color name="almost_white">#E0E0E0</color>
 </resources>

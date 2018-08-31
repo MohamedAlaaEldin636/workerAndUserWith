@@ -286,16 +286,15 @@ public class RegisterCustomDialog extends CustomDialog {
 
                 if (imageFile != null){
                     // to get file path isa. -> imageFile.getAbsolutePath();
-                    Uri fullPhotoUri = FileProvider.getUriForFile(
+                    this.fullPhotoUri = FileProvider.getUriForFile(
                             appContext,
                             "com.mohamed.mario.worker.fileprovider",
                             imageFile);
-                    this.fullPhotoUri = fullPhotoUri;
                     
                     CommonIntentsUtils.getImageFromCamera(
                             listener.getActivity(),
                             appContext.getString(R.string.Get_From_Camera),
-                            fullPhotoUri,
+                            this.fullPhotoUri,
                             CommonIntentsUtils.REQUEST_CODE_CAMERA);
                 }else {
                     Timber.v("Unexpected behaviour -> 3232 -> empty imageFile");

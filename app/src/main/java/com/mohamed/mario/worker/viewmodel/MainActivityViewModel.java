@@ -424,7 +424,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     private void writeNewWorker(
             String name, String password, String phone, String location,
             String personalImage, String profession, String description,
-            ArrayList<String> workImages, Review review, float rate, int ViewedBy
+            ArrayList<String> workImages, ArrayList<Review> review, float rate, int ViewedBy
             , FrameLayout frame_loading, CustomDialog customDialog) {
 
         final Worker worker = new Worker(name, password, phone, location, personalImage,
