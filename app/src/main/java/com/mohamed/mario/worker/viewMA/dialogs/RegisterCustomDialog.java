@@ -45,6 +45,7 @@ import com.mohamed.mario.worker.model.Worker;
 import com.mohamed.mario.worker.utils.CommonIntentsUtils;
 import com.mohamed.mario.worker.utils.NetworkUtils;
 import com.mohamed.mario.worker.utils.SharedPrefUtils;
+import com.mohamed.mario.worker.utils.SoftKeyboardUtils;
 import com.mohamed.mario.worker.view.dialogs.CustomDialog;
 import com.squareup.picasso.Picasso;
 
@@ -480,6 +481,12 @@ public class RegisterCustomDialog extends CustomDialog {
     private void changeUIAndInformActivityToLaunchHomeActivityAndDismissThisDialog(){
         // -- Remove loading indication
         makeUIChangesAccordingToLoading(false);
+
+        /* Close keyboard -> used so that home activity in rc it can isa get it's full height
+                so it's adapter -> can as well make correct item height isa. */
+        SoftKeyboardUtils.hideKeyboardFrom(getContext(), ebtUsername);
+        SoftKeyboardUtils.hideKeyboardFrom(getContext(), ebtPhone);
+        SoftKeyboardUtils.hideKeyboardFrom(getContext(), ebtPassword);
 
         // -- Tell user to launch activity
         listener.loginAndStartHomeActivityAccordingTo(isUser);

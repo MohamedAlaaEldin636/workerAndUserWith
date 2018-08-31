@@ -60,6 +60,8 @@ public class MAWorkerRCAdapter extends RecyclerView.Adapter<MAWorkerRCAdapter.Cu
         }
         view.getLayoutParams().height = itemHeight;
 
+        Timber.v("ITEM HEIGHT\nITEM HEIGHT -> " + itemHeight);
+
         return new CustomViewHolder(view);
     }
 
@@ -111,6 +113,8 @@ public class MAWorkerRCAdapter extends RecyclerView.Adapter<MAWorkerRCAdapter.Cu
         int numberOfRows = 2;
         this.itemHeight =
                 (int) ((recyclerViewHeight / numberOfRows) - (recyclerViewHeight * 0.25 * 0.25));
+
+        Timber.v("FROM\nFROM -> " + itemHeight);
 
         notifyDataSetChanged();
     }

@@ -5,6 +5,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.Observable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.net.Uri;
@@ -12,27 +13,35 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mohamed.mario.worker.BaseApplication;
 import com.mohamed.mario.worker.R;
 import com.mohamed.mario.worker.model.Worker;
 import com.mohamed.mario.worker.utils.CommonIntentsUtils;
 import com.mohamed.mario.worker.utils.NetworkUtils;
 import com.mohamed.mario.worker.utils.SharedPrefUtils;
+import com.mohamed.mario.worker.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
 
 import static com.mohamed.mario.worker.utils.DatabaseUtils.USERES_DATABASE_QUERY_PHONE;
+import static com.mohamed.mario.worker.utils.DatabaseUtils.WORKERES_DATABASE_PHOTO_LOCATION;
+import static com.mohamed.mario.worker.utils.DatabaseUtils.WORKERES_DATABASE_PHOTO_NAME;
 import static com.mohamed.mario.worker.utils.DatabaseUtils.WORKER_DATABASE_NAME;
 
 /**
@@ -94,6 +103,12 @@ public class MAWorkerProfileActivityViewModel extends AndroidViewModel {
             descriptionTextObservable.set(worker.getDescription());
 
             previousWorkImagesListObservable.set(worker.getWorkImages());
+
+            // -- add on property change to texts to be saved after change into firebase database isa.
+            nameTextObservable.addOnPropertyChangedCallback(onTextChangeObservableCallback);
+            passwordTextObservable.addOnPropertyChangedCallback(onTextChangeObservableCallback);
+            descriptionTextObservable.addOnPropertyChangedCallback(onTextChangeObservableCallback);
+            personalImageUrlObservable.addOnPropertyChangedCallback(personalImageObservableCallback);
         }
     }
 
@@ -108,7 +123,7 @@ public class MAWorkerProfileActivityViewModel extends AndroidViewModel {
             // -- set uri of the photo
             fullPhotoUri = data.getData();
         }
-        // Else then fullPhotoUri should already have the Uri isa.
+        /* Else then fullPhotoUri should already have the Uri isa. */
 
         // -- put photo in the image view
         personalImageUrlObservable.set(fullPhotoUri == null ? "" : fullPhotoUri.toString());
@@ -236,6 +251,105 @@ public class MAWorkerProfileActivityViewModel extends AndroidViewModel {
             showLoadingObservable.set(false);
         }
     };
+
+    private Observable.OnPropertyChangedCallback onTextChangeObservableCallback =
+            new Observable.OnPropertyChangedCallback() {
+        @Override
+        public void onPropertyChanged(Observable sender, int propertyId) {
+            if (sender == nameTextObservable){
+                saveTextToFirebaseDatabase("name", nameTextObservable.get());
+            }else if (sender == passwordTextObservable){
+                saveTextToFirebaseDatabase("password", nameTextObservable.get());
+            }else if (sender == descriptionTextObservable){
+                saveTextToFirebaseDatabase("description", nameTextObservable.get());
+            }
+        }
+    };
+
+    private Observable.OnPropertyChangedCallback personalImageObservableCallback
+            = new Observable.OnPropertyChangedCallback() {
+        @Override
+        public void onPropertyChanged(Observable sender, int propertyId) {
+            if (worker == null){
+                Timber.v("Worker is done, so cannot proceed to save personal image isa.");
+
+                return;
+            }
+
+            String phone = worker.getPhone();
+
+            /* 1- Save image into firebase storage, and if success occurs
+                -> then save it in database isa. */
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(
+                    WORKERES_DATABASE_PHOTO_LOCATION
+                            + phone
+                            + WORKERES_DATABASE_PHOTO_NAME);
+
+            if (fullPhotoUri == null
+                    || StringUtils.isNullOrEmpty(fullPhotoUri.toString())){
+                // Then delete currently existing image in firebase.
+                Task<Void> deleteTask = imageRef.delete();
+                deleteTask.addOnSuccessListener(task -> {
+                    Timber.v("Deleted image successfully el7.");
+
+                    saveTextToFirebaseDatabase("personalImage", "def");
+                });
+                deleteTask.addOnFailureListener(e
+                        -> Timber.v("Cannot delete and reason is -> " + e.getMessage()));
+            }else {
+                UploadTask uploadTask = imageRef.putFile(fullPhotoUri);
+                uploadTask.addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult() == null || task.getResult().getDownloadUrl() == null){
+                            // we already put "def" in image
+                            Timber.v("Task or download url is null !!! -> 345");
+
+                            return;
+                        }
+
+                        String imageUrl = task.getResult().getDownloadUrl().toString();
+
+                        if (! StringUtils.isNullOrEmpty(imageUrl)){
+                            saveTextToFirebaseDatabase("personalImage", imageUrl);
+                        }
+                    }else {
+                        Timber.v("Task was not successful, " +
+                                "while uploading the image of prev work");
+                    }
+                });
+                uploadTask.addOnFailureListener(e ->
+                        Timber.v("Error while saving image 3245, and error msg is -> "
+                                + e.getMessage()));
+            }
+        }
+    };
+
+    // ---- Private Methods
+
+    private void saveTextToFirebaseDatabase(String key, String value){
+        if (worker == null){
+            Timber.v("Worker is null, so cannot proceed to save text method in firebase isa.");
+
+            return;
+        }
+
+        String phone = worker.getPhone();
+
+        HashMap<String , Object> updatedChildFieldsMap = new HashMap<>();
+        updatedChildFieldsMap.put(key, value);
+
+        Task<Void> updateTask = FirebaseDatabase.getInstance().getReference()
+                .child(WORKER_DATABASE_NAME).child(phone)
+                .updateChildren(updatedChildFieldsMap);
+        updateTask.addOnCompleteListener(task1
+                -> Timber.v("saved text to firebase correctly el7 to this phone -> " + phone));
+        updateTask.addOnFailureListener(e -> {
+            /* Maybe because there was no such value in this field in firebase,
+                    so we should save it instead of updating it ?!! */
+            Timber.v("Error in saving text to firebase -> "
+                    + e.getMessage());
+        });
+    }
 
     // ----- Listener Interface
 

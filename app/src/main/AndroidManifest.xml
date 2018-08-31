@@ -14,10 +14,6 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyDzYHWirnnOSe0MnsYZRfNKiXnD0I7q6Ro" />
-
     <application
         android:name=".BaseApplication"
         android:allowBackup="true"
@@ -26,6 +22,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDzYHWirnnOSe0MnsYZRfNKiXnD0I7q6Ro" />
+
         <activity android:name=".view.MainActivity" />
         <activity android:name=".view.SplashActivity" />
         <activity android:name=".view.LoginActivity" />
@@ -44,11 +45,15 @@
         <activity
             android:name=".viewMA.MASplashActivity"
             android:screenOrientation="sensorPortrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".viewMA.MALoginActivity" />
         <activity android:name=".viewMA.MARegisterActivity" />
-        <activity android:name=".viewMA.MAWorkerHomeActivity" />
+        <activity android:name=".viewMA.MAWorkerHomeActivity"/>
         <activity android:name=".smallTests.TestActivity" />
         <!--
         State hidden is used to remove initial onLaunch activity focus to views
@@ -56,15 +61,7 @@
         -->
         <activity
             android:name=".viewMA.MAWorkerProfileActivity"
-            android:windowSoftInputMode="stateHidden">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".viewMA.MASubProfileImageViewerActivity"/>
     </application>
 

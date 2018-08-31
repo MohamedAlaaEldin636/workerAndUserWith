@@ -16,7 +16,6 @@ import com.mohamed.mario.worker.BaseApplication;
 import com.mohamed.mario.worker.R;
 import com.mohamed.mario.worker.utils.CommonIntentsUtils;
 import com.mohamed.mario.worker.view.UserMainActivity;
-import com.mohamed.mario.worker.view.WorkerMainActivity;
 import com.mohamed.mario.worker.view.dialogs.CustomDialog;
 import com.mohamed.mario.worker.viewMA.dialogs.RegisterCustomDialog;
 

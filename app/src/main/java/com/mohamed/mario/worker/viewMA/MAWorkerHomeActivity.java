@@ -88,17 +88,10 @@ public class MAWorkerHomeActivity extends AppCompatActivity
         // -- Profile Image Click
         binding.profileImage.setOnClickListener(v -> {
             Intent intent = new Intent(MAWorkerHomeActivity.this, MAWorkerProfileActivity.class);
-            //intent.putExtra(MAWorkerProfileActivity.INTENT_KEY_WORKER_OBJECT, worker);
-            // todo s
-            // 1- after u exclude yourself from the geofire results save your worker obj isa as
-            //      global var in viewModel.
-            // 2- to get it here call viewModel.getOwnWorker()
-            // 3- make the fade out and in animations isa
-            // 4- note in next activity the worker obj might be null if here there was no internet
-            //      connection so prepare next activity for such a situation isa.
+            intent.putExtra(MAWorkerProfileActivity.INTENT_KEY_WORKER_OBJECT, viewModel.getOwnWorker());
 
-
-            //startActivities();
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
     }
 

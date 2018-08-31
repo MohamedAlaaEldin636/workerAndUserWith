@@ -352,30 +352,4 @@ public class MAWorkerProfileActivity extends AppCompatActivity
         }
     }
 
-    /*private void updatePrevWorkImagesForWorker(ArrayList<String> imagesList){
-        // -- To get the key -> Phone -> use sharedPrefs, or get it from view model
-        Worker worker = viewModel.getWorker();
-
-        if (worker != null){
-            String phone = worker.getPhone();
-
-            HashMap<String , Object> updatedChildFieldsMap = new HashMap<>();
-            updatedChildFieldsMap.put("workImages", imagesList);
-
-            Task<Void> updateTask = FirebaseDatabase.getInstance().getReference().child(WORKER_DATABASE_NAME)
-                    .child(phone).updateChildren(updatedChildFieldsMap);
-            updateTask.addOnCompleteListener(task -> {
-                Timber.v("Images has been updated successfully el7, in -> " + phone);
-            });
-            updateTask.addOnFailureListener(e -> {
-//                 Maybe because there was no such value in this field in firebase,
-//                        so we should save it instead of updating it ?!!
-                Timber.v("Error in updating work images list -> " + e.getMessage());
-            });
-        }else {
-            Timber.v("Strage error, worker in the vm is null, " +
-                    "although it must not be null isa.");
-        }
-    }*/
-
 }

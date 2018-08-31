@@ -25,6 +25,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.mohamed.mario.worker.model.Worker;
 import com.mohamed.mario.worker.utils.DatabaseUtils;
+import com.mohamed.mario.worker.utils.SharedPrefUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,10 +50,20 @@ public class MAWorkerHomeActivityViewModel extends AndroidViewModel {
 
     private GeoQuery geoQuery;
 
+    /** Used to exclude yourself from results (used no to show yourself in results) */
+    private String ownPhone;
+    @Nullable private Worker ownWorker;
+
     public MAWorkerHomeActivityViewModel(@NonNull Application application, Listener listener) {
         super(application);
 
         this.listener = listener;
+
+        this.ownPhone = SharedPrefUtils.getLoginPhone(getApplication().getApplicationContext());
+        // Just get owner worker object to pass it when needed isa to profile activity
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(WORKER_DATABASE_NAME);
+        Query phoneQuery = ref.orderByChild(USERES_DATABASE_QUERY_PHONE).equalTo(this.ownPhone);
+        phoneQuery.addListenerForSingleValueEvent(ownWorkerValueEventListener);
     }
 
     // ---- Public Methods
@@ -115,6 +126,11 @@ public class MAWorkerHomeActivityViewModel extends AndroidViewModel {
         }
     }
 
+    @Nullable
+    public Worker getOwnWorker() {
+        return ownWorker;
+    }
+
     // ---- Private Methods
 
     private void loopThroughKeysAndGetCorrespondingWorkersList(@NonNull List<String> toBeAddedKeysList,
@@ -173,7 +189,10 @@ public class MAWorkerHomeActivityViewModel extends AndroidViewModel {
 
         @Override
         public void onKeyEntered(String key, GeoLocation location) {
-            toBeAddedKeysList.add(key);
+            // -- Exclude yourself from results
+            if (! ownPhone.equals(key)){
+                toBeAddedKeysList.add(key);
+            }
 
             Timber.v("ON GEO QUERY OF WORKERS LIST ==>>>> YESSSS I'M IN");
         }
@@ -248,6 +267,29 @@ public class MAWorkerHomeActivityViewModel extends AndroidViewModel {
             counterForEndRefresh--;
 
             listener.swapRCAdapterAndMaybeClearRefresh(null, counterForEndRefresh == 0);
+        }
+    };
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private ValueEventListener ownWorkerValueEventListener = new ValueEventListener() {
+
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<Worker> workersList = new ArrayList<>();
+            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                workersList.add(singleSnapshot.getValue(Worker.class));
+            }
+
+            if (workersList.size() == 1){
+                ownWorker = workersList.get(0);
+            }else {
+                Timber.v("Empty result of worker obj from firebase");
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Timber.v("Error while retrieving own worker -> " + databaseError.getMessage());
         }
     };
 
